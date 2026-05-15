@@ -6,7 +6,7 @@ Every day, billions of messages are sent to AI chatbots. Every single one is sto
 
 0G Private Chat changes this. It is a fully functional AI chatbot built entirely on 0G's decentralized modular stack. Your messages are processed inside hardware-isolated Trusted Execution Environments where not even the infrastructure provider can read them. Your conversations are encrypted with AES-256 and stored across a decentralized storage network where no single entity holds the complete data. And every interaction produces a verifiable, on-chain proof that you can audit at any time.
 
-This is not a prototype. This is not a mockup. This is a working application deployed on the 0G Galileo Testnet, using real 0G Compute nodes, real 0G Storage infrastructure, and a real smart contract recording every save operation on-chain.
+This is not a prototype. This is not a mockup. This is a working application deployed on the 0G Mainnet and Galileo Testnet, using real 0G Compute nodes, real 0G Storage infrastructure, and a real smart contract recording every save operation on-chain.
 
 ---
 
@@ -53,7 +53,7 @@ The AI industry has a trust problem. 0G Private Chat is the solution.
     |   (0G Chain)     |         |   (Decentralized)      |         |                   |
     +------------------+         +------------------------+         +-------------------+
     
-    Chain ID: 16602                2 Storage Nodes                  TDX Verified
+    Chain ID: 16661               Storage Nodes                   TDX Verified
     Contract: 0xc04d2D6f...        AES-256 Encrypted                Provider: 0xa48f...
 ```
 
@@ -154,7 +154,7 @@ const [tx, uploadErr] = await indexer.upload(memData, rpcUrl, signer, {
 
 ### 0G Chain: On-Chain Proof Registry
 
-The `PrivateChat.sol` smart contract, deployed on the 0G Galileo Testnet (Chain ID 16602), serves as an immutable registry of all saved conversations. Each `saveChat` call records four pieces of information: the SHA-256 content hash of the encrypted data, the Merkle root pointing to the data's location in 0G Storage, a timestamp, and the name of the AI model that generated the responses.
+The `PrivateChat.sol` smart contract, deployed on the 0G Mainnet (Chain ID 16661), serves as an immutable registry of all saved conversations. Each `saveChat` call records four pieces of information: the keccak256 content hash of the plaintext data, the Merkle root pointing to the data's location in 0G Storage, a timestamp, and the name of the AI model that generated the responses.
 
 **Contract Address:** [`0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212`](https://chainscan-galileo.0g.ai/address/0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212)
 
@@ -195,19 +195,22 @@ Clicking "Save to 0G" triggers a two-phase commit:
 ### 4. Verify
 The "Explorer" link appears next to saved conversations, pointing directly to the on-chain transaction. Anyone can verify that the conversation was saved, when it was saved, and which model was used, without being able to read the actual content.
 
+### 5. Recover
+Navigate to the **Recover** page from the sidebar or landing page. The app reads your saved chat metadata from local storage and displays each conversation with a one-click "Decrypt" button. The server downloads the encrypted data from 0G Storage, re-derives the AES-256 key, decrypts the content, and displays the full conversation in a read-only view. For manual recovery, enter a Chat ID and Merkle Root directly.
+
 ---
 
 ## Technical Stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| Frontend | React 19, Next.js 16, Tailwind CSS 4 | Responsive chat UI |
+| Frontend | React 19, Next.js 15, Tailwind CSS 4 | Responsive chat UI |
 | AI SDK | Vercel AI SDK v4 | Streaming, message management |
 | Wallet | wagmi, viem | MetaMask integration, chain switching |
 | AI Inference | 0G Compute Router | Decentralized TEE-attested LLM |
 | Data Storage | 0G Storage SDK | Encrypted decentralized persistence |
 | Smart Contract | Solidity 0.8.20 | On-chain proof registry |
-| Blockchain | 0G Galileo Testnet (16602) | Settlement and verification layer |
+| Blockchain | 0G Mainnet (16661) | Settlement and verification layer |
 
 ---
 
@@ -292,6 +295,7 @@ npx tsx scripts/deploy.ts
     providers.tsx             # WagmiProvider + QueryClientProvider
     page.tsx                  # Landing page
     chat/page.tsx             # Chat interface
+    recover/page.tsx          # Recover and decrypt saved conversations
   components/
     chat/
       chat-container.tsx     # Message stream and input
@@ -324,6 +328,22 @@ npx tsx scripts/deploy.ts
 **It is production-ready.** The application handles real streaming responses, real encryption, real storage uploads, real MetaMask transactions, and real on-chain events. The user experience is polished: loading states, error handling, chain switching, and explorer links are all implemented.
 
 The question is not whether decentralized AI is possible. 0G Private Chat proves that it is. The question is whether the world will adopt it fast enough.
+
+---
+
+## Roadmap
+
+**Wallet-Based Cross-Device Recovery.** Currently, decryption keys are derived from a server-side secret combined with the Chat ID (stored in the browser). The next step is to derive keys from on-chain data (such as the content hash stored in the contract) so that recovery works from any device with just a wallet connection, eliminating the need for local state entirely.
+
+**End-to-End Client-Side Encryption.** Move encryption from the server to the browser using the user's wallet-derived keys. This removes the server from the trust model completely: even the application operator cannot read saved conversations.
+
+**Shared Conversations.** Allow users to share encrypted chats with specific wallet addresses by re-encrypting the decryption key with the recipient's public key. The recipient can then decrypt and view the conversation from their own device.
+
+**Multi-Model Support.** Expand beyond Qwen 2.5 7B to support model selection from the full 0G Compute Router catalog, letting users choose between different TEE-attested models for different privacy and capability requirements.
+
+**On-Chain Chat Index.** Store a lightweight, encrypted chat index on-chain so users can browse and recover all their conversations from any browser without relying on localStorage.
+
+**IPFS Backup Gateway.** Add a secondary storage layer via IPFS for redundancy, ensuring conversations remain recoverable even if individual 0G Storage nodes go offline.
 
 ---
 
