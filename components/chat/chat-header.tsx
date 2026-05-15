@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useChatStore } from "@/lib/chat-store";
 import { useAccount, useWriteContract, useSwitchChain } from "wagmi";
 import { PRIVATE_CHAT_ABI } from "@/lib/contract-abi";
-import { Save, ExternalLink, Sparkles, Loader2, Check } from "lucide-react";
+import { Save, ExternalLink, Sparkles, Loader2, Check, Copy } from "lucide-react";
 import { zgMainnet } from "@/lib/wagmi-config";
 
 
@@ -117,8 +117,13 @@ export function ChatHeader() {
         <Sparkles className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
         <h2 className="text-sm font-medium truncate">{activeChat.title}</h2>
         {activeChat.savedTo0G && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20">
-            <Check className="w-3 h-3" />Saved to 0G
+          <span
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-[var(--color-success)]/10 text-[var(--color-success)] border border-[var(--color-success)]/20 cursor-pointer hover:bg-[var(--color-success)]/20 transition-all"
+            onClick={() => { navigator.clipboard.writeText(activeChatId || ""); }}
+            title={`Click to copy Chat ID: ${activeChatId}`}
+          >
+            <Check className="w-3 h-3" />Saved
+            <Copy className="w-3 h-3 opacity-50" />
           </span>
         )}
       </div>
@@ -144,7 +149,7 @@ export function ChatHeader() {
           )}
         </button>
         {activeChat.txHash && (
-          <a href={"https://chainscan-galileo.0g.ai/tx/" + activeChat.txHash} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs text-[var(--color-accent)] hover:bg-[var(--color-accent-glow)] transition-all">
+          <a href={"https://chainscan.0g.ai/tx/" + activeChat.txHash} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs text-[var(--color-accent)] hover:bg-[var(--color-accent-glow)] transition-all">
             <ExternalLink className="w-3.5 h-3.5" /> Explorer
           </a>
         )}

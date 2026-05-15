@@ -69,8 +69,16 @@ export function ChatContainer() {
   const doSend = useCallback(
     (text: string) => {
       if (!text.trim() || isLoading) return;
-      if (!activeChatId) createChat();
-      sendMessage({ prompt: text.trim() });
+      const trimmed = text.trim();
+      if (!activeChatId) {
+        createChat();
+        // Wait a tick for the chat state to settle before sending
+        setTimeout(() => {
+          sendMessage({ prompt: trimmed });
+        }, 50);
+      } else {
+        sendMessage({ prompt: trimmed });
+      }
       setLocalInput("");
     },
     [activeChatId, createChat, sendMessage, isLoading]
