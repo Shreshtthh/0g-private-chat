@@ -1,9 +1,9 @@
 "use client";
 
 import { User, Bot, ShieldCheck } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 function getContent(message: any): string {
-  // Check all possible content locations
   if (typeof message.content === "string" && message.content) return message.content;
   if (message.parts && Array.isArray(message.parts)) {
     const text = message.parts
@@ -34,7 +34,13 @@ export function MessageBubble({ message, isLast }: { message: any; isLast: boole
       )}
       <div className="max-w-[80%] sm:max-w-[70%]">
         <div className={bubbleClass}>
-          <div className="chat-content whitespace-pre-wrap break-words">{content}</div>
+          {isUser ? (
+            <div className="whitespace-pre-wrap break-words">{content}</div>
+          ) : (
+            <div className="chat-content break-words">
+              <ReactMarkdown>{content}</ReactMarkdown>
+            </div>
+          )}
         </div>
         {!isUser && (
           <div className="flex items-center gap-1 mt-1.5 ml-1">
