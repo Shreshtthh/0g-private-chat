@@ -9,22 +9,28 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@0gfoundation/0g-storage-ts-sdk": "^1.2.9",
     "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^3.0.184",
     "ai": "^6.0.182",
+    "ethers": "^6.13.1",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.11",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "hardhat": "^2.28.6",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
