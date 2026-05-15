@@ -1,14 +1,16 @@
 "use client";
-
+import { useState, useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { Wallet, LogOut, ExternalLink } from "lucide-react";
 
 export function ConnectWallet() {
+  const [mounted, setMounted] = useState(false);
   const { address, isConnected } = useAccount();
   const { connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
-
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
   if (isConnected && address) {
     return (
       <div className="flex items-center gap-2">
