@@ -5,7 +5,7 @@ import { useChatStore } from "@/lib/chat-store";
 import { useAccount, useWriteContract, useSwitchChain } from "wagmi";
 import { PRIVATE_CHAT_ABI } from "@/lib/contract-abi";
 import { Save, ExternalLink, Sparkles, Loader2, Check } from "lucide-react";
-import { zgTestnet } from "@/lib/wagmi-config";
+import { zgMainnet } from "@/lib/wagmi-config";
 
 
 const CONTRACT = process.env.NEXT_PUBLIC_ZG_PRIVATE_CHAT_CONTRACT as `0x${string}`;
@@ -17,6 +17,7 @@ export function ChatHeader() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [status, setStatus] = useState("");
+  const [savedMsgCount, setSavedMsgCount] = useState(0);
   const { switchChainAsync } = useSwitchChain();
 
   if (!activeChat) return null;
@@ -48,19 +49,27 @@ export function ChatHeader() {
 
       // Step 2: If wallet connected, record on-chain
       if (isConnected && address && CONTRACT) {
-        await switchChainAsync({ chainId: zgTestnet.id });
+        await switchChainAsync({ chainId: zgMainnet.id });
 
-        // Always try to register first (silently skip if already registered)
-        try {
+        // Check if user is already registered (read-only, no gas)
+        const { readContract } = await import("wagmi/actions");
+        const { wagmiConfig } = await import("@/lib/wagmi-config");
+        const isRegistered = await readContract(wagmiConfig, {
+          address: CONTRACT,
+          abi: PRIVATE_CHAT_ABI,
+          functionName: "isRegistered",
+          args: [address],
+          chainId: zgMainnet.id,
+        });
+
+        if (!isRegistered) {
           setStatus("Registering user...");
           await writeContractAsync({
             address: CONTRACT,
             abi: PRIVATE_CHAT_ABI,
             functionName: "registerUser",
-            chainId: zgTestnet.id,
+            chainId: zgMainnet.id,
           });
-        } catch {
-          // Already registered — that's fine
         }
 
         // Now save the chat on-chain
@@ -70,7 +79,7 @@ export function ChatHeader() {
             address: CONTRACT,
             abi: PRIVATE_CHAT_ABI,
             functionName: "saveChat",
-            chainId: zgTestnet.id,
+            chainId: zgMainnet.id,
             args: [
               data.contentHash as `0x${string}`,
               data.rootHash as `0x${string}`,
@@ -88,6 +97,8 @@ export function ChatHeader() {
         txHash: onChainTxHash,
         savedTo0G: true,
       });
+
+      setSavedMsgCount(activeChat.messages.length);
 
       setStatus("");
     } catch (err: unknown) {
@@ -120,14 +131,14 @@ export function ChatHeader() {
         )}
         <button
           onClick={handleSaveTo0G}
-          disabled={saving || activeChat.savedTo0G || activeChat.messages.length === 0}
+          disabled={saving || (activeChat.savedTo0G && activeChat.messages.length === savedMsgCount) || activeChat.messages.length === 0}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-hover)] border border-[var(--color-border)] hover:border-[var(--color-accent)] transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           title={activeChat.savedTo0G ? "Already saved" : "Save conversation to 0G Storage"}
         >
           {saving ? (
             <><Loader2 className="w-3.5 h-3.5 animate-spin" /><span className="hidden sm:inline">Saving...</span></>
-          ) : activeChat.savedTo0G ? (
-            <><Check className="w-3.5 h-3.5" /><span className="hidden sm:inline">Saved</span></>
+          ) : (activeChat.savedTo0G && activeChat.messages.length === savedMsgCount) ? (
+              <><Check className="w-3.5 h-3.5" /><span className="hidden sm:inline">Saved</span></>
           ) : (
             <><Save className="w-3.5 h-3.5" /><span className="hidden sm:inline">Save to 0G</span></>
           )}
