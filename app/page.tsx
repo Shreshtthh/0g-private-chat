@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Shield, Lock, ArrowRight, Cpu, Database, Link2, Server } from "lucide-react";
+import { Shield, Lock, ArrowRight, Cpu, Database, Link2, Server, Download } from "lucide-react";
 
 const FEATURES = [
   { icon: Cpu, title: "0G Compute", desc: "AI runs inside TEE hardware enclaves.", color: "#6c5ce7" },
@@ -40,6 +40,15 @@ export default function LandingPage() {
           <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
         </button>
       </div>
+
+              <button
+          onClick={() => router.push("/recover")}
+          className="inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-xl text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] glass hover:border-[var(--color-border-hover)] transition-all cursor-pointer"
+        >
+          <Download className="w-4 h-4" />
+          Recover Saved Conversations
+        </button>
+
 
       <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mt-20 px-4">
         {FEATURES.map((f, i) => (
