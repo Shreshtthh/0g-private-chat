@@ -22,10 +22,7 @@ export function ChatContainer() {
   const [localInput, setLocalInput] = useState("");
   const prevStatusRef = useRef<string>("");
 
-  const { messages, status, setMessages, sendMessage, error } = useChat({
-    api: "/api/chat",
-    body: { model: "llama-3.3-70b-versatile" },
-  });
+  const { messages, status, setMessages, sendMessage, error } = useChat({});
 
   const isLoading = status === "submitted" || status === "streaming";
 
