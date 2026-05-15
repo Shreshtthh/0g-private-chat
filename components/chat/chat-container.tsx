@@ -65,13 +65,14 @@ export function ChatContainer() {
     (text: string) => {
       if (!text.trim() || isLoading) return;
       const trimmed = text.trim();
+      const send = sendMessage as unknown as (msg: { prompt: string }) => void;
       if (!activeChatId) {
         createChat();
         setTimeout(() => {
-          sendMessage({ text: trimmed });
+          send({ prompt: trimmed });
         }, 50);
       } else {
-        sendMessage({ text: trimmed });
+        send({ prompt: trimmed });
       }
       setLocalInput("");
     },
