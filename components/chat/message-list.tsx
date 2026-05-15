@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Message } from "ai";
+import type { UIMessage } from "ai";
 import { MessageBubble } from "./message-bubble";
 import { Bot } from "lucide-react";
 
-export function MessageList({ messages, isLoading }: { messages: Message[]; isLoading: boolean }) {
+export function MessageList({ messages, isLoading }: { messages: UIMessage[]; isLoading: boolean }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isLoading]);
 

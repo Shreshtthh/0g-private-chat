@@ -12,7 +12,7 @@ async function main() {
   const balance = await provider.getBalance(wallet.address);
   console.log("Balance:", ethers.formatEther(balance), "0G");
 
-  if (balance === 0n) {
+  if (balance === BigInt(0)) {
     console.error("No balance! Fund this wallet first.");
     process.exit(1);
   }

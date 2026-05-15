@@ -67,12 +67,11 @@ export function ChatContainer() {
       const trimmed = text.trim();
       if (!activeChatId) {
         createChat();
-        // Wait a tick for the chat state to settle before sending
         setTimeout(() => {
-          sendMessage({ prompt: trimmed });
+          sendMessage({ text: trimmed });
         }, 50);
       } else {
-        sendMessage({ prompt: trimmed });
+        sendMessage({ text: trimmed });
       }
       setLocalInput("");
     },
