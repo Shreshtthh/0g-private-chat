@@ -40,7 +40,6 @@ export function ChatContainer() {
           id: m.id,
           role: m.role as "user" | "assistant" | "system",
           content: getContent(m),
-          createdAt: m.createdAt,
         })),
       });
     }
@@ -54,7 +53,6 @@ export function ChatContainer() {
           id: m.id,
           role: m.role,
           content: m.content,
-          createdAt: m.createdAt,
           parts: [{ type: "text" as const, text: m.content }],
         }))
       );
