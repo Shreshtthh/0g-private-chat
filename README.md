@@ -215,12 +215,14 @@ The "Explorer" link appears next to saved conversations, pointing directly to th
 
 | Resource | Address / URL |
 |---|---|
-| PrivateChat Contract | [`0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212`](https://chainscan-galileo.0g.ai/address/0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212) |
-| Deployer Wallet | [`0xf89540a95b7332199f36c77e3a0958Bd6F7e6341`](https://chainscan-galileo.0g.ai/address/0xf89540a95b7332199f36c77e3a0958Bd6F7e6341) |
+| PrivateChat Contract (Mainnet) | [`0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212`](https://chainscan.0g.ai/address/0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212) |
+| PrivateChat Contract (Testnet) | [`0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212`](https://chainscan-galileo.0g.ai/address/0xc04d2D6f8AB14eB01f67b1e5Be5bf204c5AA2212) |
+| Deployer Wallet | [`0xf89540a95b7332199f36c77e3a0958Bd6F7e6341`](https://chainscan.0g.ai/address/0xf89540a95b7332199f36c77e3a0958Bd6F7e6341) |
 | 0G Compute Router | `router-api-testnet.integratenetwork.work` |
 | 0G Storage Indexer | `indexer-storage-testnet-turbo.0g.ai` |
-| Chain Explorer | [chainscan-galileo.0g.ai](https://chainscan-galileo.0g.ai) |
+| Chain Explorer (Mainnet) | [chainscan.0g.ai](https://chainscan.0g.ai) |
 | Storage Explorer | [storagescan-galileo.0g.ai](https://storagescan-galileo.0g.ai) |
+
 
 ---
 
