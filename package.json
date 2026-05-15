@@ -12,12 +12,15 @@
     "@0gfoundation/0g-storage-ts-sdk": "^1.2.9",
     "@ai-sdk/openai": "^3.0.63",
     "@ai-sdk/react": "^3.0.184",
+    "@tanstack/react-query": "^5.100.10",
     "ai": "^6.0.182",
     "ethers": "^6.13.1",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "viem": "^2.49.2",
+    "wagmi": "^3.6.15"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.11",
