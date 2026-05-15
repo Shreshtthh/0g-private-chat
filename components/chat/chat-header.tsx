@@ -2,12 +2,22 @@
 
 import { useState } from "react";
 import { useChatStore } from "@/lib/chat-store";
+import { useAccount, useWriteContract, useSwitchChain } from "wagmi";
+import { PRIVATE_CHAT_ABI } from "@/lib/contract-abi";
 import { Save, ExternalLink, Sparkles, Loader2, Check } from "lucide-react";
+import { zgTestnet } from "@/lib/wagmi-config";
+
+
+const CONTRACT = process.env.NEXT_PUBLIC_ZG_PRIVATE_CHAT_CONTRACT as `0x${string}`;
 
 export function ChatHeader() {
   const { activeChat, activeChatId, updateChat } = useChatStore();
+  const { address, isConnected } = useAccount();
+  const { writeContractAsync } = useWriteContract();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [status, setStatus] = useState("");
+  const { switchChainAsync } = useSwitchChain();
 
   if (!activeChat) return null;
 
@@ -19,6 +29,8 @@ export function ChatHeader() {
     setSaveError(null);
 
     try {
+      // Step 1: Upload encrypted chat to 0G Storage
+      setStatus("Encrypting & uploading...");
       const res = await fetch("/api/storage/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,19 +42,58 @@ export function ChatHeader() {
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Storage upload failed");
 
-      if (!res.ok) {
-        throw new Error(data.error || "Save failed");
+      let onChainTxHash = data.txHash;
+
+      // Step 2: If wallet connected, record on-chain
+      if (isConnected && address && CONTRACT) {
+        await switchChainAsync({ chainId: zgTestnet.id });
+
+        // Always try to register first (silently skip if already registered)
+        try {
+          setStatus("Registering user...");
+          await writeContractAsync({
+            address: CONTRACT,
+            abi: PRIVATE_CHAT_ABI,
+            functionName: "registerUser",
+            chainId: zgTestnet.id,
+          });
+        } catch {
+          // Already registered — that's fine
+        }
+
+        // Now save the chat on-chain
+        try {
+          setStatus("Recording on-chain...");
+          onChainTxHash = await writeContractAsync({
+            address: CONTRACT,
+            abi: PRIVATE_CHAT_ABI,
+            functionName: "saveChat",
+            chainId: zgTestnet.id,
+            args: [
+              data.contentHash as `0x${string}`,
+              data.rootHash as `0x${string}`,
+              "qwen/qwen-2.5-7b-instruct",
+            ],
+          });
+        } catch (contractErr: unknown) {
+          console.warn("Contract call failed:", contractErr);
+        }
       }
+
 
       updateChat(activeChatId, {
         merkleRoot: data.rootHash,
-        txHash: data.txHash,
+        txHash: onChainTxHash,
         savedTo0G: true,
       });
+
+      setStatus("");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Save failed";
       setSaveError(msg);
+      setStatus("");
       setTimeout(() => setSaveError(null), 5000);
     } finally {
       setSaving(false);
@@ -63,6 +114,9 @@ export function ChatHeader() {
       <div className="flex items-center gap-2">
         {saveError && (
           <span className="text-xs text-red-400 max-w-[200px] truncate">{saveError}</span>
+        )}
+        {status && (
+          <span className="text-xs text-[var(--color-accent)] animate-pulse">{status}</span>
         )}
         <button
           onClick={handleSaveTo0G}
@@ -87,3 +141,4 @@ export function ChatHeader() {
     </div>
   );
 }
+
