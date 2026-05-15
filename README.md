@@ -311,7 +311,7 @@ npx tsx scripts/deploy.ts
 
 ---
 
-## Why This Proves
+## What This Proves
 
 **It is not a concept.** Every integration is live. The 0G Compute Router responds to real queries with TEE-attested inference. The 0G Storage network holds real encrypted chat data across decentralized nodes. The PrivateChat smart contract on the Galileo Testnet contains real, verifiable records of saved conversations.
 
