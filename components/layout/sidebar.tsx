@@ -2,6 +2,7 @@
 
 import { useChatStore } from "@/lib/chat-store";
 import { Plus, MessageSquare, Trash2, Shield, X } from "lucide-react";
+import { ConnectWallet } from "./connect-wallet";
 
 interface SidebarProps { onClose?: () => void; }
 
@@ -46,12 +47,14 @@ export function Sidebar({ onClose }: SidebarProps) {
         ))}
       </div>
 
-      <div className="p-4 border-t border-[var(--color-border)]">
+      <div className="p-4 border-t border-[var(--color-border)] space-y-3">
+        <ConnectWallet />
         <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
           <div className="w-2 h-2 rounded-full bg-[var(--color-success)] animate-pulse" />
-          <span>Decentralized ? Encrypted ? Private</span>
+          <span>Decentralized · Encrypted · Private</span>
         </div>
       </div>
+
     </div>
   );
 }

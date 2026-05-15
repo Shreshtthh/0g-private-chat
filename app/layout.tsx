@@ -1,23 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { ChatProvider } from "@/lib/chat-store";
+import { Providers } from "./providers";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "0G Private Chat",
-  description: "A decentralized, privacy-preserving AI chatbot powered by 0G.",
+  description: "A decentralized, privacy-preserving AI chatbot. Your conversations are encrypted and stored on 0G's decentralized network.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className="dark">
       <body className="min-h-screen bg-[var(--color-bg-primary)] antialiased">
-        <ChatProvider>{children}</ChatProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
