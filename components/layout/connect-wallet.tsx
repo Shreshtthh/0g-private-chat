@@ -13,7 +13,7 @@ export function ConnectWallet() {
     return (
       <div className="flex items-center gap-2">
         <a
-          href={`https://chainscan-galileo.0g.ai/address/${address}`}
+          href={`https://chainscan.0g.ai/address/${address}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] glass transition-all"
